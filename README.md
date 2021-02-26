@@ -16,11 +16,11 @@ Tensorflow >= 1.11.0
 
 ####1. Build three graphs
 
-Run TGCN1_2layers/build_graph_tgcn.py
+Run TGCN_2layers/build_graph_tgcn.py
 
 ####2. Training
 
-Run TGCN1_2layers/train.py
+Run TGCN_2layers/train.py
 
 
 # Example input data
