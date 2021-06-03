@@ -42,6 +42,6 @@ we propose a LSTM-based method to construct a semantic-based graph from text doc
 
 
 #### Syntactic-based graph
-- Step 1: We utilize stanford CoreNLP parser to extract dependency between words. You can learn how to use the toolkit through [this website](https://www.pianshen.com/article/8433287443/)
+- Step 1: We utilize stanford CoreNLP parser to extract dependency between words. You can learn how to use the toolkit through [this website.](https://www.pianshen.com/article/8433287443/)
 - Step 2: Get syntactic relationship word pairs for the dataset by :
   Run TGCN1_2layers/get_syntactic_relationship.py. 
