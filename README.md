@@ -23,7 +23,7 @@ Run TGCN_2layers/build_graph_tgcn.py
 Run TGCN_2layers/train.py
 
 
-# Example input data
+#### Example input data
 
 1. `/data_tgcn/mr/build_train/mr.clean.txt` indicates document names, training/test split, document labels. Each line is for a document.
 
@@ -34,14 +34,14 @@ Run TGCN_2layers/train.py
 4. `/data_tgcn/mr/build_train/mr_semantic_0.05.pkl` contains all semantic relationship word pairs for the dataset.
 
 
-#Semantic-based graph
+#### Semantic-based graph
 we propose a LSTM-based method to construct a semantic-based graph from text documents. There are three main steps:
 - Step 1: Train a LSTM on the training data of the given task (e.g. text classification here).
 - Step 2: Get semantic features/embeddings with LSTM for all words in each document/sentence of the corpus.
 - Step 3: Calculate word-word edge weights based on word semantic embeddings over the corpus.The calculation formula can be found in formula (3) in the paper.
 
 
-#Syntactic-based graph
+#### Syntactic-based graph
 - Step 1: We utilize stanford CoreNLP parser to extract dependency between words. You can learn how to use the toolkit through [this website](https://www.pianshen.com/article/8433287443/)
 - Step 2: Get syntactic relationship word pairs for the dataset by :
   Run TGCN1_2layers/get_syntactic_relationship.py. 
