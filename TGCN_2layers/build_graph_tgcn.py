@@ -22,7 +22,7 @@ output1 = os.sep.join(['..', 'data_tgcn', dataset, 'build_train', dataset])
 output2 = os.sep.join(['..', 'data_tgcn', dataset, 'build_train'])
 
 word_embeddings_dim = 300
-window_size = 20
+window_size = 7
 word_vector_map = {}
 
 # shulffing
@@ -462,7 +462,7 @@ weight1 = []
 weight2 = []
 
 # 根据stanford句法依存构建边权重
-data1 = pickle.load(open(input2 + "/{}_pair_stan.pkl".format(dataset), "rb"))
+data1 = pickle.load(open(input2 + "/{}_stan.pkl".format(dataset), "rb"))
 max_count1 = 0.0
 min_count1 = 0.0
 count1 = []

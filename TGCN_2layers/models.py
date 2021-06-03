@@ -50,6 +50,15 @@ class Model(object):
         self.outputs = tf.stack([self.activations[-3], self.activations[-2], self.activations[-1]], axis=0)
         self.outputs = tf.reduce_mean(self.outputs, axis=0)
 
+        # tmp = tf.concat([self.activations[3],self.activations[4],self.activations[5],self.activations[6],self.activations[7],self.activations[8]], -1)
+        # with tf.variable_scope(self.name + '_vars'):
+        #     while tmp.shape[1].value > self.output_dim * 2:
+        #         weight = glorot([tmp.shape[1].value, tmp.shape[1].value // 2])
+        #         tmp = tf.nn.tanh(tf.matmul(tmp, weight))
+        #     weight = glorot([tmp.shape[1].value, self.output_dim])
+        #     tmp = tf.matmul(tmp, weight)
+        # self.outputs = tmp
+
         # Store model variables for easy access
         # variables = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope=self.name)
         variables = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=self.name)

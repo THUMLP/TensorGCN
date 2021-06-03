@@ -17,7 +17,9 @@ os.path.abspath(os.path.join(os.getcwd(), ".."))
 f_file = os.sep.join(['..', 'data_tgcn', dataset, 'build_train'])
 
 # Set random seed
-seed = random.randint(1, 200)
+#seed = random.randint(1, 200)
+seed=148
+print(seed)
 np.random.seed(seed)
 tf.set_random_seed(seed)
 
@@ -30,14 +32,14 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string('dataset', dataset, 'Dataset string.')
 # 'gcn', 'gcn_cheby', 'dense'
 flags.DEFINE_string('model', 'gcn', 'Model string.')
-flags.DEFINE_float('learning_rate', 0.002, 'Initial learning rate.')
+flags.DEFINE_float('learning_rate', 0.0002, 'Initial learning rate.')
 flags.DEFINE_integer('epochs', 1000, 'Number of epochs to train.')
 flags.DEFINE_integer('hidden1', 200, 'Number of units in hidden layer 1.')
 flags.DEFINE_integer('num_labels', 2, 'Number of units in mlp2 output1.')
-flags.DEFINE_float('dropout', 0.2, 'Dropout rate (1 - keep probability).')
-flags.DEFINE_float('weight_decay', 0.000005,
+flags.DEFINE_float('dropout', 0.8, 'Dropout rate (1 - keep probability).')
+flags.DEFINE_float('weight_decay', 0.000001,
                    'Weight for L2 loss on embedding matrix.')  # 5e-4
-flags.DEFINE_integer('early_stopping', 1000,
+flags.DEFINE_integer('early_stopping', 2000,
                      'Tolerance for early stopping (# of epochs).')
 flags.DEFINE_integer('max_degree', 3, 'Maximum Chebyshev polynomial degree.')
 
@@ -107,11 +109,12 @@ def evaluate(features, support, labels, mask, placeholders):
 # Init variables
 sess.run(tf.global_variables_initializer())
 
-istrain = True
+istrain = False
 if istrain:
     cost_valid = []
     acc_valid = []
     max_acc = 0.0
+    min_cost = 10.0
     for epoch in range(FLAGS.epochs):
 
         t = time.time()
@@ -126,22 +129,22 @@ if istrain:
         # Validation
         valid_cost, valid_acc, pred, labels, duration = evaluate(
             features, support, y_val, val_mask, placeholders)
-        cost_valid.append(valid_cost)
-        acc_valid.append(valid_acc)
 
         # Testing
         test_cost, test_acc, pred, labels, test_duration = evaluate(
             features, support, y_test, test_mask, placeholders)
 
+        cost_valid.append(valid_cost)
+        acc_valid.append(valid_acc)
         print("Epoch:", '%04d' % (epoch + 1), "train_loss=", "{:.5f}".format(outs[1]), "train_acc=",
               "{:.5f}".format(outs[2]), "val_loss=", "{:.5f}".format(valid_cost),
               "val_acc=", "{:.5f}".format(valid_acc), "test_loss=", "{:.5f}".format(test_cost), "test_acc=",
               "{:.5f}".format(test_acc), "time=", "{:.5f}".format(time.time() - t))
 
         # save model
-        if epoch > 1 and acc_valid[-1] >= max_acc:
+        if epoch >900 and  cost_valid[-1] < min_cost:
             model.save(sess)
-            max_acc = acc_valid[-1]
+            min_cost = cost_valid[-1]
 
         if epoch > FLAGS.early_stopping and cost_valid[-1] > np.mean(cost_valid[-(FLAGS.early_stopping + 1):-1]):
             print("Early stopping...")
@@ -151,6 +154,7 @@ if istrain:
 
 
 else:
+    FLAGS.dropout = 1.0
     model.load(sess)
     # Testing
     test_cost, test_acc, pred, labels, test_duration = evaluate(
