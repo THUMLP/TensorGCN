@@ -1,4 +1,4 @@
-#TensorGCN
+# TensorGCN
 
 The implementation of [TensorGCN](https://arxiv.org/pdf/2001.05313.pdf) in paper:
 
@@ -14,13 +14,13 @@ Tensorflow >= 1.11.0
 
 # Reproduing Results
 
-####1. Build three graphs
+#### 1. Build three graphs
 
-Run TGCN1_2layers/build_graph_tgcn.py
+Run TGCN_2layers/build_graph_tgcn.py
 
-####2. Training
+#### 2. Training
 
-Run TGCN1_2layers/train.py
+Run TGCN_2layers/train.py
 
 
 # Example input data
