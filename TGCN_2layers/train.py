@@ -154,7 +154,6 @@ if istrain:
 
 
 else:
-    FLAGS.dropout = 1.0
     model.load(sess)
     # Testing
     test_cost, test_acc, pred, labels, test_duration = evaluate(
