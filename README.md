@@ -9,7 +9,7 @@ Liu X, You X, Zhang X, et al. Tensor graph convolutional networks for text class
 
 Python 3.6
 
-Tensorflow >= 1.11.0
+Tensorflow 1.15
 
 
 # Reproduing Results
