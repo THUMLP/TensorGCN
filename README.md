@@ -45,6 +45,7 @@ we propose a LSTM-based method to construct a semantic-based graph from text doc
 - Step 1: We utilize stanford CoreNLP parser to extract dependency between words. You can learn how to use the toolkit through [this website.](https://www.pianshen.com/article/8433287443/)
 
 - Step 2: Change one line of code in "dependency_parse" function :
+
   before:return [(dep['dep'], dep['governor'], dep['dependent']) for s in r_dict['sentences'] for dep in s['basicDependencies']]
   
   ![image](before.png)
