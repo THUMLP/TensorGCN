@@ -36,7 +36,7 @@ flags.DEFINE_float('learning_rate', 0.0002, 'Initial learning rate.')
 flags.DEFINE_integer('epochs', 1000, 'Number of epochs to train.')
 flags.DEFINE_integer('hidden1', 200, 'Number of units in hidden layer 1.')
 flags.DEFINE_integer('num_labels', 2, 'Number of units in mlp2 output1.')
-flags.DEFINE_float('dropout', 0.8, 'Dropout rate (1 - keep probability).')
+flags.DEFINE_float('dropout', 0.9, 'Dropout rate (1 - keep probability).')
 flags.DEFINE_float('weight_decay', 0.000001,
                    'Weight for L2 loss on embedding matrix.')  # 5e-4
 flags.DEFINE_integer('early_stopping', 2000,
@@ -109,48 +109,48 @@ def evaluate(features, support, labels, mask, placeholders):
 # Init variables
 sess.run(tf.global_variables_initializer())
 
-istrain = False
+istrain = True
 if istrain:
     cost_valid = []
     acc_valid = []
     max_acc = 0.0
     min_cost = 10.0
-    for epoch in range(FLAGS.epochs):
+    with open("record_{}.txt".format(FLAGS.dropout),'w',encoding='utf8') as f:
+        print(str(FLAGS.dropout))
+        for epoch in range(FLAGS.epochs):
+            t = time.time()
+            # Construct feed dictionary
+            feed_dict = construct_feed_dict(
+                features, support, support_mix, y_train, train_mask, placeholders)
+            feed_dict.update({placeholders['dropout']: FLAGS.dropout})
 
-        t = time.time()
-        # Construct feed dictionary
-        feed_dict = construct_feed_dict(
-            features, support, support_mix, y_train, train_mask, placeholders)
-        feed_dict.update({placeholders['dropout']: FLAGS.dropout})
+            # Training step
+            outs = sess.run([model.opt_op, model.loss, model.accuracy], feed_dict=feed_dict)
 
-        # Training step
-        outs = sess.run([model.opt_op, model.loss, model.accuracy], feed_dict=feed_dict)
+            # Validation
+            valid_cost, valid_acc, pred, labels, duration = evaluate(
+                features, support, y_val, val_mask, placeholders)
 
-        # Validation
-        valid_cost, valid_acc, pred, labels, duration = evaluate(
-            features, support, y_val, val_mask, placeholders)
+            # Testing
+            test_cost, test_acc, pred, labels, test_duration = evaluate(
+                features, support, y_test, test_mask, placeholders)
 
-        # Testing
-        test_cost, test_acc, pred, labels, test_duration = evaluate(
-            features, support, y_test, test_mask, placeholders)
+            cost_valid.append(valid_cost)
+            acc_valid.append(valid_acc)
+            tmp = "Epoch:", '%04d' % (epoch + 1), "train_loss=", "{:.5f}".format(outs[1]), "train_acc=","{:.5f}".format(outs[2]), "val_loss=", "{:.5f}".format(valid_cost),"val_acc=", "{:.5f}".format(valid_acc), "test_loss=", "{:.5f}".format(test_cost), "test_acc=","{:.5f}".format(test_acc), "time=", "{:.5f}".format(time.time() - t)
+            print(tmp)
+            f.write(' '.join(tmp))
+            f.write('\n')
+            # save model
+            if epoch >900 and  cost_valid[-1] < min_cost:
+                model.save(sess)
+                min_cost = cost_valid[-1]
 
-        cost_valid.append(valid_cost)
-        acc_valid.append(valid_acc)
-        print("Epoch:", '%04d' % (epoch + 1), "train_loss=", "{:.5f}".format(outs[1]), "train_acc=",
-              "{:.5f}".format(outs[2]), "val_loss=", "{:.5f}".format(valid_cost),
-              "val_acc=", "{:.5f}".format(valid_acc), "test_loss=", "{:.5f}".format(test_cost), "test_acc=",
-              "{:.5f}".format(test_acc), "time=", "{:.5f}".format(time.time() - t))
+            if epoch > FLAGS.early_stopping and cost_valid[-1] > np.mean(cost_valid[-(FLAGS.early_stopping + 1):-1]):
+                print("Early stopping...")
+                break
 
-        # save model
-        if epoch >900 and  cost_valid[-1] < min_cost:
-            model.save(sess)
-            min_cost = cost_valid[-1]
-
-        if epoch > FLAGS.early_stopping and cost_valid[-1] > np.mean(cost_valid[-(FLAGS.early_stopping + 1):-1]):
-            print("Early stopping...")
-            break
-
-    print("Optimization Finished!")
+        print("Optimization Finished!")
 
 
 else:
