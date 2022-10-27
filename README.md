@@ -4,6 +4,8 @@ The implementation of [TensorGCN](https://arxiv.org/pdf/2001.05313.pdf) in paper
 
 Liu X, You X, Zhang X, et al. Tensor graph convolutional networks for text classification[C]//Proceedings of the AAAI Conference on Artificial Intelligence. 2020, 34(05): 8409-8416.
 
+The pytorch implementation of this paper: [this website.](https://github.com/THUMLP/TensorGCN_pytorch)
+
 
 # Require
 
